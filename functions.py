@@ -37,7 +37,10 @@ def slope_computing(a_h:float,b_h:float,horiz_diff:float = 10):
     height_diff = b_h-a_h
     return np.arctan(height_diff/horiz_diff)
 
-def build_node_graph(df_alt_map,node_graph):
+def build_node_graph(df_alt_map,node_graph,min_slope:float=-0.46,max_slope:float=0.46):
+    """
+    Skips node connections if slope excedes the range of data provided and on which the slope model is confident
+    """
 
     for i,row in df_alt_map.iterrows():
         
@@ -48,39 +51,43 @@ def build_node_graph(df_alt_map,node_graph):
             try: 
                 n_h = df_alt_map.loc[i-1,j]
                 slope = slope_computing(act_h,n_h)
-                energy_cost = get_energy_cost(slope,poly_features_model,energy_model)[0][0]
-                # print(f"\tNORTH: {act_h}-{n_h}") 
-                # print(f"\t\tslope: {slope}") 
-                # print(f"\t\tenergy_cost: {energy_cost}") 
-                node_graph.add_edge(f"({i},{j})",f"({i-1},{j})",weight=energy_cost)
+                if min_slope<slope<max_slope:
+                    energy_cost = get_energy_cost(slope,poly_features_model,energy_model)[0][0]
+                    # print(f"\tNORTH: {act_h}-{n_h}") 
+                    # print(f"\t\tslope: {slope}") 
+                    # print(f"\t\tenergy_cost: {energy_cost}") 
+                    node_graph.add_edge(f"({i},{j})",f"({i-1},{j})",weight=energy_cost)
             except: pass
             # SOUTH
             try: 
                 s_h = df_alt_map.loc[i+1,j]
                 slope = slope_computing(act_h,s_h)
-                energy_cost = get_energy_cost(slope,poly_features_model,energy_model)[0][0]
-                # print(f"\tSOUTH: {act_h}-{s_h}")
-                # print(f"\t\tslope: {slope}") 
-                # print(f"\t\tenergy_cost: {energy_cost}")
-                node_graph.add_edge(f"({i},{j})",f"({i+1},{j})",weight=energy_cost)
+                if min_slope<slope<max_slope:
+                    energy_cost = get_energy_cost(slope,poly_features_model,energy_model)[0][0]
+                    # print(f"\tSOUTH: {act_h}-{s_h}")
+                    # print(f"\t\tslope: {slope}") 
+                    # print(f"\t\tenergy_cost: {energy_cost}")
+                    node_graph.add_edge(f"({i},{j})",f"({i+1},{j})",weight=energy_cost)
             except: pass
             # EAST
             try: 
                 e_h = df_alt_map.loc[i,j+1]
                 slope = slope_computing(act_h,e_h)
-                energy_cost = get_energy_cost(slope,poly_features_model,energy_model)[0][0]
-                # print(f"\tEAST: {act_h}-{e_h}")
-                # print(f"\t\tslope: {slope}") 
-                # print(f"\t\tenergy_cost: {energy_cost}") 
-                node_graph.add_edge(f"({i},{j})",f"({i},{j+1})",weight=energy_cost)
+                if min_slope<slope<max_slope:
+                    energy_cost = get_energy_cost(slope,poly_features_model,energy_model)[0][0]
+                    # print(f"\tEAST: {act_h}-{e_h}")
+                    # print(f"\t\tslope: {slope}") 
+                    # print(f"\t\tenergy_cost: {energy_cost}") 
+                    node_graph.add_edge(f"({i},{j})",f"({i},{j+1})",weight=energy_cost)
             except: pass
             # WEST
             try: 
                 w_h = df_alt_map.loc[i,j-1]
                 slope = slope_computing(act_h,w_h)
-                energy_cost = get_energy_cost(slope,poly_features_model,energy_model)[0][0]
-                # print(f"\tWEST: {act_h}-{w_h}")
-                # print(f"\t\tslope: {slope}") 
-                # print(f"\t\tenergy_cost: {energy_cost}") 
-                node_graph.add_edge(f"({i},{j})",f"({i},{j-1})",weight=energy_cost)
+                if min_slope<slope<max_slope:
+                    energy_cost = get_energy_cost(slope,poly_features_model,energy_model)[0][0]
+                    # print(f"\tWEST: {act_h}-{w_h}")
+                    # print(f"\t\tslope: {slope}") 
+                    # print(f"\t\tenergy_cost: {energy_cost}") 
+                    node_graph.add_edge(f"({i},{j})",f"({i},{j-1})",weight=energy_cost)
             except: pass
