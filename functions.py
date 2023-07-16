@@ -22,3 +22,17 @@ def get_energy_cost(gradient:np.array,poly_features_model,energy_model)->np.arra
     y_pred = energy_model.predict(x_poly)
     return y_pred
 
+def slope_computing(a_h:float,b_h:float,horiz_diff:float = 10):
+    """
+    Calculates the slope between 2 different heights and a fixed horizontal displacement.
+
+    Args:
+        a_h (np.float): Actual height
+        b_h (np.float): Next height
+        horiz_diff (np.float): Horizontak displacement (10 meters)
+
+    Returns:
+        np.float64: slope between heights in radians
+    """
+    height_diff = b_h-a_h
+    return np.arctan(height_diff/horiz_diff)
