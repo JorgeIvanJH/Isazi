@@ -1,6 +1,8 @@
 import numpy as np
 import joblib
-
+import networkx as nx
+import ast
+import pandas as pd
 
 energy_model = joblib.load('models/energy_model.pkl')
 poly_features_model = joblib.load('models/poly_features_model.pkl')
@@ -91,3 +93,13 @@ def build_node_graph(df_alt_map,node_graph,min_slope:float=-0.46,max_slope:float
                     # print(f"\t\tenergy_cost: {energy_cost}") 
                     node_graph.add_edge(f"({i},{j})",f"({i},{j-1})",weight=energy_cost)
             except: pass
+
+def compute_route(node_graph,starting_point:tuple=(0,0),end_point:tuple=(200,559)):
+    starting_point = starting_point[::-1]
+    end_point = end_point[::-1]
+    starting_point = f"({starting_point[0]},{starting_point[1]})"
+    end_point = f"({end_point[0]},{end_point[1]})"
+    route_str = nx.shortest_path(node_graph, starting_point, end_point, weight='weight')
+    route = [ast.literal_eval(elem) for elem in route_str]
+    route_df = pd.DataFrame(route,columns=['y_coord','x_coord'])
+    return route_df

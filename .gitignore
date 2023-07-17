@@ -2,3 +2,4 @@
 *.pdf
 *.txt
 __pycache__/
+planned_routes/
