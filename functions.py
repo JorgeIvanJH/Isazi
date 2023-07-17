@@ -104,6 +104,51 @@ def build_node_graph(df_alt_map,node_graph,min_slope:float=-0.46,max_slope:float
                     # print(f"\t\tenergy_cost: {energy_cost}") 
                     node_graph.add_edge(f"({i},{j})",f"({i},{j-1})",weight=energy_cost)
             except: pass
+            # NORTH EAST
+            try: 
+                ne_h = df_alt_map.loc[i+1,j+1]
+                slope = slope_computing(act_h,ne_h,10*2**(1/2))
+                if min_slope<slope<max_slope:
+                    energy_cost = get_energy_cost(slope,poly_features_model,energy_model)[0][0]
+                    # print(f"\tWEST: {act_h}-{w_h}")
+                    # print(f"\t\tslope: {slope}") 
+                    # print(f"\t\tenergy_cost: {energy_cost}") 
+                    node_graph.add_edge(f"({i},{j})",f"({i+1},{j+1})",weight=energy_cost)
+            except: pass
+            # SOUTH EAST
+            try: 
+                se_h = df_alt_map.loc[i-1,j+1]
+                slope = slope_computing(act_h,w_se,10*2**(1/2))
+                if min_slope<slope<max_slope:
+                    energy_cost = get_energy_cost(slope,poly_features_model,energy_model)[0][0]
+                    # print(f"\tWEST: {act_h}-{w_h}")
+                    # print(f"\t\tslope: {slope}") 
+                    # print(f"\t\tenergy_cost: {energy_cost}") 
+                    node_graph.add_edge(f"({i},{j})",f"({i-1},{j+1})",weight=energy_cost)
+            except: pass
+            # NORTH WEST
+            try: 
+                nw_h = df_alt_map.loc[i+1,j-1]
+                slope = slope_computing(act_h,nw_h,10*2**(1/2))
+                if min_slope<slope<max_slope:
+                    energy_cost = get_energy_cost(slope,poly_features_model,energy_model)[0][0]
+                    # print(f"\tWEST: {act_h}-{w_h}")
+                    # print(f"\t\tslope: {slope}") 
+                    # print(f"\t\tenergy_cost: {energy_cost}") 
+                    node_graph.add_edge(f"({i},{j})",f"({i+1},{j-1})",weight=energy_cost)
+            except: pass
+            # SOUTH WEST
+            try: 
+                sw_h = df_alt_map.loc[i-1,j-1]
+                slope = slope_computing(act_h,sw_h,10*2**(1/2))
+                if min_slope<slope<max_slope:
+                    energy_cost = get_energy_cost(slope,poly_features_model,energy_model)[0][0]
+                    # print(f"\tWEST: {act_h}-{w_h}")
+                    # print(f"\t\tslope: {slope}") 
+                    # print(f"\t\tenergy_cost: {energy_cost}") 
+                    node_graph.add_edge(f"({i},{j})",f"({i-1},{j-1})",weight=energy_cost)
+            except: pass
+
 
 def compute_route(node_graph,starting_point:tuple=(0,0),end_point:tuple=(200,559))->pd.DataFrame:
     """
